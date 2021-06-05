@@ -1,10 +1,11 @@
 """
     Installs KinZ library
 """
-from setuptools import setup, Extension
-from setuptools.command.build_ext import build_ext
 import sys
+
 import setuptools
+from setuptools import Extension, setup
+from setuptools.command.build_ext import build_ext
 
 __version__ = '1.0'
 
@@ -28,8 +29,11 @@ ext_modules = [
         include_dirs=[
             # Path to pybind11 headers
             get_pybind_include(),
-            get_pybind_include(user=True)
+            get_pybind_include(user=True),
+            'C:\Program Files\Azure Kinect SDK v1.4.1\sdk\include'
         ],
+        libraries=['k4a'],
+        library_dirs=['C:\Program Files\Azure Kinect SDK v1.4.1\sdk\windows-desktop\\amd64\\release\lib'],
         language='c++'
     ),
 ]
@@ -65,7 +69,7 @@ def cpp_flag(compiler):
 class BuildExt(build_ext):
     """A custom build extension for adding compiler-specific options."""
     c_opts = {
-        'msvc': ['/EHsc'],
+        'msvc': ['/EHsc /VERBOSE'],
         'unix': [],
     }
     l_opts = {
@@ -78,20 +82,23 @@ class BuildExt(build_ext):
         c_opts['unix'] += darwin_opts
         l_opts['unix'] += darwin_opts
 
+
     def build_extensions(self):
+        # super().build_extensions()
         ct = self.compiler.compiler_type
         opts = self.c_opts.get(ct, [])
         link_opts = self.l_opts.get(ct, [])
-        if '-Wstrict-prototypes' in self.compiler.compiler_so:
+        try:
             self.compiler.compiler_so.remove('-Wstrict-prototypes')
-        #super().build_extensions()
+        except (ValueError, AttributeError):
+            pass
         if ct == 'unix':
             opts.append('-DVERSION_INFO="%s"' % self.distribution.get_version())
             opts.append(cpp_flag(self.compiler))
             if has_flag(self.compiler, '-fvisibility=hidden'):
                 opts.append('-fvisibility=hidden')
         elif ct == 'msvc':
-            opts.append('/DVERSION_INFO=\\"%s\\"' % self.distribution.get_version())
+            opts.append('/DVERSION_INFO=\\"%s\\" /VERBOSE' % self.distribution.get_version())
         for ext in self.extensions:
             ext.extra_compile_args = opts
             ext.extra_link_args = link_opts
