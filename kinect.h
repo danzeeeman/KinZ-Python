@@ -16,9 +16,9 @@
 #include "utils.h"
 #include "calibration.h"
 
-#ifdef BODY
+
 #include <k4abt.h>
-#endif
+
 
 /**
  * Implementation of K4a wrapper for python bindings
@@ -53,13 +53,13 @@ private:
     bool m_imu_sensors_available;
 
     // Body tracking
-    #ifdef BODY
+    
     k4abt_tracker_t m_tracker = NULL;
     k4abt_frame_t m_body_frame = NULL;
     bool m_body_tracking_available;
     uint32_t m_num_bodies;
     py::list m_bodies;
-    #endif
+    
 
     // calibration and transformation object
     k4a_calibration_t m_calibration;
@@ -77,11 +77,11 @@ private:
     void update_calibration(Calibration&, bool);
     bool depth_image_to_point_cloud(int width, int height, k4a_image_t &xyz_image);
     
-    #ifdef BODY
+    
     py::dict get_body_data(k4abt_body_t body);
     void change_body_index_to_body_id(uint8_t* image_data, int width, int height);
     k4a_image_t convert_body_index_map_to_colour();
-    #endif
+    
 
 public:
     Kinect(uint8_t deviceIndex = 0, int resolution = 1080, bool wfov = false,
@@ -116,11 +116,11 @@ public:
     std::vector<std::vector<int> > map_coords_3d_to_color(std::vector<std::vector<int> > &coords3d, bool depth_reference);
 
     // Body tracking functions
-    #ifdef BODY
+    
     int get_num_bodies();
     py::list get_bodies();
     BodyIndexData get_body_index_map(bool returnId=false, bool inColor=false);
-    #endif
+    
 };
 
 #endif

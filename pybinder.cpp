@@ -147,11 +147,9 @@ PYBIND11_MODULE(kinz, m) {
         .def("map_coords_3d_to_color", &Kinect::map_coords_3d_to_color,
             "Map 3D coordinates to color space",
             py::arg("coords3d"), py::arg("depth_reference")=true)
-        #ifdef BODY
         .def("get_num_bodies", &Kinect::get_num_bodies, "Get number of bodies found")
         .def("get_bodies", &Kinect::get_bodies, "Get bodies list")
         .def("get_body_index_map", &Kinect::get_body_index_map, "Return body index map frame",
             py::arg("returnId")=false, py::arg("inColor")=false)
-        #endif
         ;
 }

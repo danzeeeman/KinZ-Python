@@ -30,10 +30,11 @@ ext_modules = [
             # Path to pybind11 headers
             get_pybind_include(),
             get_pybind_include(user=True),
-            'C:\Program Files\Azure Kinect SDK v1.4.1\sdk\include'
+            'C:\Program Files\Azure Kinect SDK v1.4.1\sdk\include',
+            'C:\Program Files\Azure Kinect Body Tracking SDK\sdk\include'
         ],
-        libraries=['k4a'],
-        library_dirs=['C:\Program Files\Azure Kinect SDK v1.4.1\sdk\windows-desktop\\amd64\\release\lib'],
+        libraries=['k4a', 'k4abt'],
+        library_dirs=['C:\Program Files\Azure Kinect SDK v1.4.1\sdk\windows-desktop\\amd64\\release\lib', 'C:\Program Files\Azure Kinect Body Tracking SDK\sdk\windows-desktop\\amd64\\release\lib'],
         language='c++'
     ),
 ]
@@ -69,7 +70,7 @@ def cpp_flag(compiler):
 class BuildExt(build_ext):
     """A custom build extension for adding compiler-specific options."""
     c_opts = {
-        'msvc': ['/EHsc /VERBOSE'],
+        'msvc': ['/EHsc'],
         'unix': [],
     }
     l_opts = {
@@ -98,7 +99,7 @@ class BuildExt(build_ext):
             if has_flag(self.compiler, '-fvisibility=hidden'):
                 opts.append('-fvisibility=hidden')
         elif ct == 'msvc':
-            opts.append('/DVERSION_INFO=\\"%s\\" /VERBOSE' % self.distribution.get_version())
+            opts.append('/DVERSION_INFO=\\"%s\\"' % self.distribution.get_version())
         for ext in self.extensions:
             ext.extra_compile_args = opts
             ext.extra_link_args = link_opts

@@ -4,6 +4,7 @@ dependencies:
   - numpy
   - pyyaml
   - pip
+  - cmapy
   - pip:
     - opencv-contrib-python
     - open3d

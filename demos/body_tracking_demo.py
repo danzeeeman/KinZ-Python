@@ -12,7 +12,7 @@
 import numpy as np 
 import cv2
 import kinz
-import cmapy
+# import cmapy
 
 
 def main():
@@ -56,7 +56,7 @@ def main():
             depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(depth_image, alpha=0.03), cv2.COLORMAP_JET)
 
             # Apply colormap on body index image
-            body_index_image = cv2.applyColorMap(body_index_image*10, cmapy.cmap('tab20'))
+            # body_index_image = cv2.applyColorMap(body_index_image*10, cmapy.cmap('tab20'))
 
             # Draw bodies on the RGB image
             draw_keypoints(color_image, bodies, img_type='rgb')
@@ -75,7 +75,8 @@ def main():
 
             cv2.imshow('Depth', depth_colormap)
             cv2.imshow('Color', color_small)
-            cv2.imshow('Body index', body_index_image)
+            if body_index_image.shape[0] > 0 & body_index_image.shape[1] > 0 :
+                cv2.imshow('Body index', body_index_image)
 
         k = cv2.waitKey(1) & 0xFF
         if k == 27:

@@ -222,7 +222,7 @@ int Kinect::initialize(uint8_t deviceIndex, int resolution, bool wfov, bool binn
         }
     }
 
-    #ifdef BODY
+    
     // Start tracker
     m_body_tracking_available = false;
     m_num_bodies = 0;
@@ -237,7 +237,7 @@ int Kinect::initialize(uint8_t deviceIndex, int resolution, bool wfov, bool binn
             m_body_tracking_available = false;
         }
     }
-    #endif
+    
 
 
     return 0;
@@ -316,7 +316,7 @@ const int Kinect::get_frames(bool get_color, bool get_depth,
         m_image_ir = NULL;
     }
 
-    #ifdef BODY
+    
     if (m_body_index) {
         k4a_image_release(m_body_index);
         m_body_index = NULL;
@@ -325,7 +325,7 @@ const int Kinect::get_frames(bool get_color, bool get_depth,
         k4abt_frame_release(m_body_frame);
         m_body_frame = NULL;
     }
-    #endif
+    
 
     // Get a m_capture
     switch (k4a_device_get_capture(m_device, &m_capture, TIMEOUT_IN_MS)) {
@@ -405,7 +405,7 @@ const int Kinect::get_frames(bool get_color, bool get_depth,
         }
     }
 
-    #ifdef BODY
+    
     if (get_body && m_body_tracking_available) {
         // Get body tracking data
         k4a_wait_result_t queue_capture_result = k4abt_tracker_enqueue_capture(m_tracker, m_capture, K4A_WAIT_INFINITE);
@@ -457,7 +457,7 @@ const int Kinect::get_frames(bool get_color, bool get_depth,
             }
         }
     }
-    #endif
+    
 
     if(good_color && good_depth && good_ir)
         return 1;
@@ -609,7 +609,7 @@ std::string Kinect::get_serial_number()
 }
 
 void Kinect::close(){
-    #ifdef BODY
+    
     if (m_tracker != NULL) {
         k4abt_tracker_shutdown(m_tracker);
         k4abt_tracker_destroy(m_tracker);
@@ -623,7 +623,7 @@ void Kinect::close(){
         k4abt_frame_release(m_body_frame);
         m_body_frame = NULL;
     }
-    #endif
+    
 
     if (m_device != NULL) {
         k4a_device_stop_cameras(m_device);
@@ -1082,7 +1082,7 @@ void Kinect::save_pointcloud(const char *file_name) {
     }
 }
 
-#ifdef BODY
+
 int Kinect::get_num_bodies() {
     return m_num_bodies;
 }
@@ -1253,6 +1253,6 @@ k4a_image_t Kinect::convert_body_index_map_to_colour()
 
     return body_index_in_colour_space;
 }
-#endif
+
 
 
